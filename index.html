@@ -41,7 +41,7 @@
     --accent-soft:#EEEDFE; --success:#0E9F6E; --danger:#D6455B;
     --shadow:0 1px 2px rgba(20,21,27,.04), 0 12px 32px -12px rgba(20,21,27,.14);
     --shadow-lg:0 2px 4px rgba(20,21,27,.05), 0 28px 60px -20px rgba(79,70,229,.22);
-    --r:16px; --r-sm:11px;
+    --r:16px; --r-sm:11px; --header-bg:rgba(244,245,248,.72);
   }
   :root[data-theme="dark"]{
     --paper:#0E0F14; --surface:#171922; --surface-2:#13151D; --ink:#ECEDF1; --muted:#9AA1AD; --faint:#6B7280;
@@ -49,6 +49,7 @@
     --accent-soft:#23243A; --success:#2BC58A; --danger:#F0697E;
     --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px -14px rgba(0,0,0,.6);
     --shadow-lg:0 2px 4px rgba(0,0,0,.35), 0 30px 64px -22px rgba(0,0,0,.66);
+    --header-bg:rgba(13,14,19,.66);
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
@@ -65,16 +66,24 @@
   ::selection{background:var(--accent-soft);color:var(--accent-press)}
   .wrap{max-width:760px;margin:0 auto;padding:0 22px;padding-left:max(22px,env(safe-area-inset-left));padding-right:max(22px,env(safe-area-inset-right))}
 
-  header.bar{padding:22px 0 8px;padding-top:max(22px,calc(env(safe-area-inset-top) + 14px))}
-  .bar-inner{display:flex;align-items:center;justify-content:space-between}
-  .brand{display:flex;align-items:center;gap:10px;font-family:"Sora",sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;text-decoration:none}
+  header.bar{
+    position:sticky; top:0; z-index:50;
+    padding-top:max(11px, env(safe-area-inset-top)); padding-bottom:11px;
+    background:var(--header-bg);
+    -webkit-backdrop-filter:saturate(180%) blur(14px);
+    backdrop-filter:saturate(180%) blur(14px);
+    border-bottom:1px solid transparent; transition:border-color .25s, background .3s;
+  }
+  header.bar.scrolled{border-bottom-color:var(--line)}
+  .bar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
+  .brand{display:flex;align-items:center;gap:9px;font-family:"Sora",sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;text-decoration:none;color:var(--ink);min-width:0}
+  .brand .brand-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .brand .dot{color:var(--accent)}
-  .mark{width:26px;height:26px;flex:none}
-  .actions{display:flex;align-items:center;gap:9px}
-  .icon-btn{width:38px;height:38px;flex:none;border:1px solid var(--line);border-radius:99px;background:var(--surface);color:var(--muted);display:grid;place-items:center;transition:.18s}
+  .mark{width:28px;height:28px;flex:none}
+  .actions{display:flex;align-items:center;gap:8px;flex:none}
+  .icon-btn{width:40px;height:40px;flex:none;border:1px solid var(--line);border-radius:12px;background:var(--surface);color:var(--muted);display:grid;place-items:center;transition:.18s;text-decoration:none}
   .icon-btn:hover{color:var(--ink);border-color:var(--line-hover)}
-  .ghlink{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:500;color:var(--muted);text-decoration:none;padding:8px 13px;border:1px solid var(--line);border-radius:99px;background:var(--surface);transition:.18s}
-  .ghlink:hover{color:var(--ink);border-color:var(--line-hover)}
+  .icon-btn:active{transform:scale(.94)}
 
   .hero{padding:54px 0 8px;text-align:center}
   .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:6px 13px;border-radius:99px;margin-bottom:20px}
@@ -168,15 +177,21 @@
   footer .brand{justify-content:center;font-size:15px;margin-bottom:6px;color:var(--muted)}
 
   #redirect{min-height:100vh;display:flex;align-items:center;justify-content:center;text-align:center;padding:24px}
-  .rd-card{max-width:380px}
-  .rd-spin{width:40px;height:40px;margin:0 auto 22px;border:3px solid var(--accent-soft);border-top-color:var(--accent);border-radius:99px;animation:spin .8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
-  .rd-card h2{font-family:"Sora",sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
+  .rd-card{max-width:380px;width:100%}
+  .rd-ring{position:relative;width:86px;height:86px;margin:0 auto 24px}
+  .rd-ring svg{width:86px;height:86px;transform:rotate(-90deg)}
+  .rd-track{fill:none;stroke:var(--accent-soft);stroke-width:6}
+  .rd-prog{fill:none;stroke:var(--accent);stroke-width:6;stroke-linecap:round;stroke-dasharray:214}
+  .rd-count{position:absolute;inset:0;display:grid;place-items:center;font-family:"Sora",sans-serif;font-weight:700;font-size:32px;color:var(--ink)}
+  .rd-card h2{font-family:"Sora",sans-serif;font-size:21px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
   .rd-card p{color:var(--muted);font-size:14.5px}
-  .rd-card .home-btn{display:inline-flex;margin-top:20px;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;font-family:"Sora",sans-serif;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:11px;transition:.16s}
+  .rd-dest{margin:14px auto 0;max-width:320px;font-family:"JetBrains Mono",monospace;font-size:13px;color:var(--muted);word-break:break-all;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:9px 13px}
+  .rd-card .home-btn{display:inline-flex;margin-top:22px;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;font-family:"Sora",sans-serif;font-weight:600;font-size:14.5px;padding:12px 22px;border-radius:11px;transition:.16s;opacity:0;transform:translateY(6px)}
+  .rd-card .home-btn.show{opacity:1;transform:translateY(0)}
   :root[data-theme="dark"] .rd-card .home-btn{color:#0E0F14}
   .rd-card .home-btn:hover{background:var(--accent-press)}
-  .rd-fail .rd-spin{display:none}
+  .rd-fail .rd-ring{display:none}
+  @keyframes spin{to{transform:rotate(360deg)}}
 
   @media (max-width:560px){
     .field{flex-direction:column}
@@ -191,7 +206,7 @@
 <body class="booting">
 
 <div id="app">
-  <header class="bar">
+  <header class="bar" id="topbar">
     <div class="wrap bar-inner">
       <a href="./" class="brand">
         <svg class="mark" viewBox="0 0 26 26" fill="none">
@@ -199,15 +214,14 @@
           <path d="M9.2 13h7.6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-dasharray="0.1 3.4"/>
           <path d="M10.5 9.4 7.9 13l2.6 3.6M15.5 9.4 18.1 13l-2.6 3.6" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg>
-        kısaltıver<span class="dot">.</span>
+        <span class="brand-name">kısaltıver<span class="dot">.</span></span>
       </a>
-      <div class="actions">
+      <nav class="actions">
         <button class="icon-btn" id="themeBtn" type="button" aria-label="Temayı değiştir"></button>
-        <a class="ghlink" id="ghLink" href="https://github.com" target="_blank" rel="noopener">
-          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.49-2.7-1.07-2.7-1.07-.36-.93-.89-1.18-.89-1.18-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-          GitHub
+        <a class="icon-btn" id="ghLink" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
+          <svg width="17" height="17" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.49-2.7-1.07-2.7-1.07-.36-.93-.89-1.18-.89-1.18-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
         </a>
-      </div>
+      </nav>
     </div>
   </header>
 
@@ -308,9 +322,16 @@
 
 <div id="redirect">
   <div class="rd-card" id="rdCard">
-    <div class="rd-spin"></div>
+    <div class="rd-ring" id="rdRing">
+      <svg viewBox="0 0 86 86"><circle class="rd-track" cx="43" cy="43" r="34"/><circle class="rd-prog" id="rdProg" cx="43" cy="43" r="34"/></svg>
+      <span class="rd-count" id="rdCount">3</span>
+    </div>
     <h2 id="rdTitle">Yönlendiriliyor…</h2>
-    <p id="rdText">Bir saniye, doğru sayfaya götürüyoruz.</p>
+    <p id="rdText">Birazdan hedef sayfaya götürüyoruz.</p>
+    <div class="rd-dest" id="rdDest" style="display:none"></div>
+    <a class="home-btn" id="rdGo" href="#" rel="noopener">Siteye git
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
   </div>
 </div>
 
@@ -421,15 +442,49 @@
     document.body.classList.remove("booting");
     document.getElementById("redirect").style.display="flex";
     document.getElementById("app").style.display="none";
-    try{
-      const url = await resolveLink(code);
-      if(url){ location.replace(url); return; }
-    }catch(e){}
+
+    let url=null;
+    try{ url = await resolveLink(code); }catch(e){}
+
     const card=document.getElementById("rdCard");
-    card.classList.add("rd-fail");
-    document.getElementById("rdTitle").textContent="Bağlantı bulunamadı";
-    document.getElementById("rdText").textContent="Bu bağlantı geçersiz ya da 3 günlük süresi dolmuş olabilir.";
-    card.insertAdjacentHTML("beforeend",'<a class="home-btn" href="https://'+DOMAIN+'/">Yeni bağlantı kısalt</a>');
+    const goBtn=document.getElementById("rdGo");
+
+    if(!url){
+      card.classList.add("rd-fail");
+      document.getElementById("rdTitle").textContent="Bağlantı bulunamadı";
+      document.getElementById("rdText").textContent="Bu bağlantı geçersiz ya da 3 günlük süresi dolmuş olabilir.";
+      goBtn.textContent="Yeni bağlantı kısalt";
+      goBtn.href="https://"+DOMAIN+"/";
+      goBtn.classList.add("show");
+      return;
+    }
+
+    // Başarılı → 3 sn geri sayım
+    const SECONDS=3, C=214;
+    const prog=document.getElementById("rdProg");
+    const countEl=document.getElementById("rdCount");
+    const destEl=document.getElementById("rdDest");
+
+    try{ destEl.textContent = new URL(url).host; }catch(e){ destEl.textContent=url; }
+    destEl.style.display="block";
+    goBtn.href=url;
+
+    if(prog){
+      prog.style.strokeDashoffset="0";
+      requestAnimationFrame(()=>{ prog.style.transition="stroke-dashoffset "+SECONDS+"s linear"; prog.style.strokeDashoffset=String(C); });
+    }
+
+    let left=SECONDS;
+    countEl.textContent=left;
+    const timer=setInterval(()=>{
+      left--;
+      if(left>0){ countEl.textContent=left; return; }
+      clearInterval(timer);
+      countEl.textContent="0";
+      goBtn.classList.add("show");                 // süre bitince buton belirir
+      document.getElementById("rdText").textContent="Açılmadıysa aşağıdaki butona dokun.";
+      location.replace(url);                        // ve otomatik yönlendir
+    },1000);
   }
 
   /* ── Uygulama ── */
@@ -543,6 +598,12 @@
     goBtn.addEventListener("click",shorten);
     urlInput.addEventListener("keydown",e=>{ if(e.key==="Enter") shorten(); });
     aliasInput.addEventListener("keydown",e=>{ if(e.key==="Enter") shorten(); });
+
+    const topbar=document.getElementById("topbar");
+    const onScroll=()=>{ if(topbar) topbar.classList.toggle("scrolled", window.scrollY>4); };
+    window.addEventListener("scroll", onScroll, {passive:true});
+    onScroll();
+
     renderRecent();
     urlInput.focus();
   }
