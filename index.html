@@ -4,7 +4,35 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>kısaltıver — uzun bağlantını saniyede kısalt</title>
-<meta name="description" content="Uzun bağlantını yapıştır, kısa ve temiz bir link al. Ücretsiz, reklamsız. Linkler 3 gün geçerlidir." />
+<meta name="description" content="kısaltıver — ücretsiz ve reklamsız bağlantı kısaltma aracı (URL kısaltıcı). Uzun bağlantıları saniyeler içinde kısaltın, QR kod oluşturun, kolayca paylaşın." />
+<meta name="keywords" content="link kısaltma, url kısaltıcı, bağlantı kısaltma, kısa link, link kısaltıcı, ücretsiz link kısaltma, qr kod oluştur" />
+<meta name="robots" content="index, follow" />
+<meta name="author" content="kısaltıver" />
+<link rel="canonical" href="https://kısaltıver.com/" />
+
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content="kısaltıver" />
+<meta property="og:locale" content="tr_TR" />
+<meta property="og:url" content="https://kısaltıver.com/" />
+<meta property="og:title" content="kısaltıver — uzun bağlantını saniyede kısalt" />
+<meta property="og:description" content="Ücretsiz, reklamsız URL kısaltıcı. Uzun bağlantıları kısaltın, QR kod alın, paylaşın." />
+<meta name="twitter:card" content="summary" />
+<meta name="twitter:title" content="kısaltıver — uzun bağlantını saniyede kısalt" />
+<meta name="twitter:description" content="Ücretsiz, reklamsız URL kısaltıcı. Uzun bağlantıları kısaltın, QR kod alın, paylaşın." />
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebApplication",
+  "name": "kısaltıver",
+  "url": "https://kısaltıver.com/",
+  "applicationCategory": "UtilitiesApplication",
+  "operatingSystem": "Web",
+  "inLanguage": "tr-TR",
+  "description": "Ücretsiz ve reklamsız bağlantı kısaltma aracı. Uzun URL'leri kısaltın, QR kod oluşturun ve paylaşın.",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "TRY" }
+}
+</script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Crect width='26' height='26' rx='8' fill='%234F46E5'/%3E%3Cpath d='M9.2 13h7.6' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-dasharray='0.1 3.4'/%3E%3Cpath d='M10.5 9.4 7.9 13l2.6 3.6M15.5 9.4 18.1 13l-2.6 3.6' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
 
 <!-- Tema: yanıp sönmeyi önlemek için en başta uygula -->
@@ -53,30 +81,29 @@
   }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
-  body{font-family:"Inter",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
-  body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
-    background:radial-gradient(900px 480px at 50% -8%, rgba(79,70,229,.10), transparent 70%),
-               radial-gradient(700px 420px at 88% 4%, rgba(124,92,252,.06), transparent 70%)}
-  :root[data-theme="dark"] body::before{
-    background:radial-gradient(900px 480px at 50% -8%, rgba(128,121,245,.16), transparent 70%),
-               radial-gradient(700px 420px at 88% 4%, rgba(124,92,252,.10), transparent 70%)}
+  body{font-family:"Inter",system-ui,sans-serif;color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s;
+    background:
+      radial-gradient(900px 480px at 50% -8%, rgba(79,70,229,.10), transparent 70%),
+      radial-gradient(700px 420px at 88% 4%, rgba(124,92,252,.06), transparent 70%),
+      var(--paper);
+    background-repeat:no-repeat}
+  :root[data-theme="dark"] body{
+    background:
+      radial-gradient(900px 480px at 50% -8%, rgba(128,121,245,.16), transparent 70%),
+      radial-gradient(700px 420px at 88% 4%, rgba(124,92,252,.10), transparent 70%),
+      var(--paper);
+    background-repeat:no-repeat}
   body.booting #app, body.booting #redirect{display:none}
   a{color:inherit}
   button{font-family:inherit;cursor:pointer}
   ::selection{background:var(--accent-soft);color:var(--accent-press)}
   .wrap{max-width:760px;margin:0 auto;padding:0 22px;padding-left:max(22px,env(safe-area-inset-left));padding-right:max(22px,env(safe-area-inset-right))}
 
-  header.bar{
-   position: sticky;
-   top: 0;
-   z-index: 999;
-   padding-top: 26px; /* env kaldır */
-   background: var(--header-bg);
-   backdrop-filter: saturate(180%) blur(14px);
-   -webkit-backdrop-filter: saturate(180%) blur(14px);
+  .topline{
+    display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding-top:max(16px, calc(env(safe-area-inset-top) + 14px));
+    padding-bottom:8px;min-height:48px;
   }
-  header.bar.scrolled{border-bottom-color:var(--line)}
-  .bar-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
   .brand{display:flex;align-items:center;gap:9px;font-family:"Sora",sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;text-decoration:none;color:var(--ink);min-width:0}
   .brand .brand-name{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .brand .dot{color:var(--accent)}
@@ -207,8 +234,8 @@
 <body class="booting">
 
 <div id="app">
-  <header class="bar" id="topbar">
-    <div class="wrap bar-inner">
+  <main class="wrap">
+    <div class="topline">
       <a href="./" class="brand">
         <svg class="mark" viewBox="0 0 26 26" fill="none">
           <rect width="26" height="26" rx="8" fill="#4F46E5"/>
@@ -217,16 +244,9 @@
         </svg>
         <span class="brand-name">kısaltıver<span class="dot">.</span></span>
       </a>
-      <nav class="actions">
-        <button class="icon-btn" id="themeBtn" type="button" aria-label="Temayı değiştir"></button>
-        <a class="icon-btn" id="ghLink" href="https://github.com" target="_blank" rel="noopener" aria-label="GitHub">
-          <svg width="17" height="17" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.49-2.7-1.07-2.7-1.07-.36-.93-.89-1.18-.89-1.18-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-        </a>
-      </nav>
+      <button class="icon-btn" id="themeBtn" type="button" aria-label="Temayı değiştir"></button>
     </div>
-  </header>
 
-  <main class="wrap">
     <section class="hero">
       <span class="eyebrow"><b></b> Ücretsiz · reklamsız · 3 gün geçerli</span>
       <h1>Uzun bağlantını<br>yapıştır, <span class="cut">kısaltıver.</span></h1>
@@ -316,7 +336,7 @@
   <footer>
     <div class="wrap">
       <div class="brand">kısaltıver<span class="dot" style="color:var(--accent)">.</span></div>
-      <div>Bağlantılar 3 gün saklanır, sonra otomatik silinir.</div>
+      <div style="max-width:560px;margin:0 auto">kısaltıver, ücretsiz ve reklamsız bir bağlantı kısaltma aracıdır (URL kısaltıcı). Uzun bağlantıları saniyeler içinde kısaltın, QR kod oluşturun ve kolayca paylaşın. Oluşturduğunuz bağlantılar 3 gün saklanır, sonra otomatik silinir.</div>
     </div>
   </footer>
 </div>
@@ -440,6 +460,8 @@
 
   /* ── Yönlendirme ── */
   async function runRedirect(code){
+    // Kısa-link sayfaları arama motorlarında çıkmasın (yalnızca ana sayfa indekslensin)
+    try{ var _nr=document.createElement("meta"); _nr.name="robots"; _nr.content="noindex,nofollow"; document.head.appendChild(_nr); }catch(e){}
     document.body.classList.remove("booting");
     document.getElementById("redirect").style.display="flex";
     document.getElementById("app").style.display="none";
@@ -468,6 +490,7 @@
 
     try{ destEl.textContent = new URL(url).host; }catch(e){ destEl.textContent=url; }
     destEl.style.display="block";
+    document.getElementById("rdText").textContent="Hedef adres aşağıda. Sayaç bitince devam edebilirsin.";
     goBtn.href=url;
 
     if(prog){
@@ -481,10 +504,10 @@
       left--;
       if(left>0){ countEl.textContent=left; return; }
       clearInterval(timer);
-      countEl.textContent="0";
-      goBtn.classList.add("show");                 // süre bitince buton belirir
-      document.getElementById("rdText").textContent="Açılmadıysa aşağıdaki butona dokun.";
-      location.replace(url);                        // ve otomatik yönlendir
+      countEl.textContent="✓";
+      document.getElementById("rdTitle").textContent="Hazır";
+      document.getElementById("rdText").textContent="Devam etmek için butona dokun.";
+      goBtn.classList.add("show");                 // süre bitince buton belirir, otomatik gitmez
     },1000);
   }
 
@@ -599,11 +622,6 @@
     goBtn.addEventListener("click",shorten);
     urlInput.addEventListener("keydown",e=>{ if(e.key==="Enter") shorten(); });
     aliasInput.addEventListener("keydown",e=>{ if(e.key==="Enter") shorten(); });
-
-    const topbar=document.getElementById("topbar");
-    const onScroll=()=>{ if(topbar) topbar.classList.toggle("scrolled", window.scrollY>4); };
-    window.addEventListener("scroll", onScroll, {passive:true});
-    onScroll();
 
     renderRecent();
     urlInput.focus();
