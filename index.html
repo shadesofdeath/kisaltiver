@@ -2,20 +2,29 @@
 <html lang="tr">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
 <title>kısaltıver — uzun bağlantını saniyede kısalt</title>
 <meta name="description" content="Uzun bağlantını yapıştır, kısa ve temiz bir link al. Ücretsiz, reklamsız. Linkler 3 gün geçerlidir." />
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 26 26'%3E%3Crect width='26' height='26' rx='8' fill='%234F46E5'/%3E%3Cpath d='M9.2 13h7.6' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-dasharray='0.1 3.4'/%3E%3Cpath d='M10.5 9.4 7.9 13l2.6 3.6M15.5 9.4 18.1 13l-2.6 3.6' stroke='%23fff' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
 
+<!-- Tema: yanıp sönmeyi önlemek için en başta uygula -->
+<script>
+  try{
+    var _t = localStorage.getItem("kv_theme");
+    if(_t!=="light" && _t!=="dark") _t = matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    document.documentElement.dataset.theme = _t;
+  }catch(e){ document.documentElement.dataset.theme = "light"; }
+</script>
+
 <!-- ════════════════════════════════════════════════════════════════
-     BURAYA İKİ DEĞER YAPIŞTIR (Supabase'den alacaksın — ücretsiz)
-     Boş bırakırsan site "demo modunda" çalışır: linkler yalnızca senin
-     tarayıcında saklanır. Doldurunca herkesin açabildiği linklere geçer.
+     BURAYA İKİ DEĞER YAPIŞTIR (Supabase'den — ücretsiz)
+     Boş bırakırsan "demo modu": linkler yalnızca bu tarayıcıda saklanır.
+     Doldurunca herkesin açabildiği gerçek linklere geçer.
 ════════════════════════════════════════════════════════════════ -->
 <script>
   window.KISALT_CONFIG = {
-    SUPABASE_URL: "https://uksrqggocchtjkpcpdbe.supabase.com",       // örn: https://abcdxyz.supabase.co
-    SUPABASE_ANON_KEY: "sb_publishable_b-L9tk2HE05vnJWxcwYb6g_fiTK1GOm",  // "anon public" anahtarı
+    SUPABASE_URL: "https://uksrqggocchtjkpcpdbe.supabase.co",
+    SUPABASE_ANON_KEY: "sb_publishable_b-L9tk2HE05vnJWxcwYb6g_fiTK1GOm",
     DOMAIN: "kısaltıver.com"
   };
 </script>
@@ -27,32 +36,45 @@
 
 <style>
   :root{
-    --paper:#F3F4F7; --surface:#FFFFFF; --ink:#14151B; --muted:#6B7280; --faint:#9AA0AC;
-    --line:#E6E8EE; --line-soft:#EFF1F5; --accent:#4F46E5; --accent-press:#4338CA;
+    --paper:#F3F4F7; --surface:#FFFFFF; --surface-2:#FCFCFE; --ink:#14151B; --muted:#6B7280; --faint:#9AA0AC;
+    --line:#E6E8EE; --line-soft:#EFF1F5; --line-hover:#D7DAE2; --accent:#4F46E5; --accent-press:#4338CA;
     --accent-soft:#EEEDFE; --success:#0E9F6E; --danger:#D6455B;
     --shadow:0 1px 2px rgba(20,21,27,.04), 0 12px 32px -12px rgba(20,21,27,.14);
     --shadow-lg:0 2px 4px rgba(20,21,27,.05), 0 28px 60px -20px rgba(79,70,229,.22);
     --r:16px; --r-sm:11px;
   }
+  :root[data-theme="dark"]{
+    --paper:#0E0F14; --surface:#171922; --surface-2:#13151D; --ink:#ECEDF1; --muted:#9AA1AD; --faint:#6B7280;
+    --line:#262A35; --line-soft:#1E222C; --line-hover:#373D4A; --accent:#8079F5; --accent-press:#9A94F8;
+    --accent-soft:#23243A; --success:#2BC58A; --danger:#F0697E;
+    --shadow:0 1px 2px rgba(0,0,0,.3), 0 14px 34px -14px rgba(0,0,0,.6);
+    --shadow-lg:0 2px 4px rgba(0,0,0,.35), 0 30px 64px -22px rgba(0,0,0,.66);
+  }
   *{box-sizing:border-box;margin:0;padding:0}
   html{-webkit-text-size-adjust:100%}
-  body{font-family:"Inter",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden}
+  body{font-family:"Inter",system-ui,sans-serif;background:var(--paper);color:var(--ink);line-height:1.55;-webkit-font-smoothing:antialiased;min-height:100vh;overflow-x:hidden;transition:background .3s,color .3s}
   body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
     background:radial-gradient(900px 480px at 50% -8%, rgba(79,70,229,.10), transparent 70%),
                radial-gradient(700px 420px at 88% 4%, rgba(124,92,252,.06), transparent 70%)}
+  :root[data-theme="dark"] body::before{
+    background:radial-gradient(900px 480px at 50% -8%, rgba(128,121,245,.16), transparent 70%),
+               radial-gradient(700px 420px at 88% 4%, rgba(124,92,252,.10), transparent 70%)}
   body.booting #app, body.booting #redirect{display:none}
   a{color:inherit}
   button{font-family:inherit;cursor:pointer}
   ::selection{background:var(--accent-soft);color:var(--accent-press)}
-  .wrap{max-width:760px;margin:0 auto;padding:0 22px}
+  .wrap{max-width:760px;margin:0 auto;padding:0 22px;padding-left:max(22px,env(safe-area-inset-left));padding-right:max(22px,env(safe-area-inset-right))}
 
-  header.bar{padding:22px 0 8px}
+  header.bar{padding:22px 0 8px;padding-top:max(22px,calc(env(safe-area-inset-top) + 14px))}
   .bar-inner{display:flex;align-items:center;justify-content:space-between}
   .brand{display:flex;align-items:center;gap:10px;font-family:"Sora",sans-serif;font-weight:700;font-size:18px;letter-spacing:-.02em;text-decoration:none}
   .brand .dot{color:var(--accent)}
   .mark{width:26px;height:26px;flex:none}
-  .ghlink{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:500;color:var(--muted);text-decoration:none;padding:7px 12px;border:1px solid var(--line);border-radius:99px;background:var(--surface);transition:.18s}
-  .ghlink:hover{color:var(--ink);border-color:#D7DAE2}
+  .actions{display:flex;align-items:center;gap:9px}
+  .icon-btn{width:38px;height:38px;flex:none;border:1px solid var(--line);border-radius:99px;background:var(--surface);color:var(--muted);display:grid;place-items:center;transition:.18s}
+  .icon-btn:hover{color:var(--ink);border-color:var(--line-hover)}
+  .ghlink{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;font-weight:500;color:var(--muted);text-decoration:none;padding:8px 13px;border:1px solid var(--line);border-radius:99px;background:var(--surface);transition:.18s}
+  .ghlink:hover{color:var(--ink);border-color:var(--line-hover)}
 
   .hero{padding:54px 0 8px;text-align:center}
   .eyebrow{display:inline-flex;align-items:center;gap:7px;font-size:13px;font-weight:500;color:var(--accent);background:var(--accent-soft);padding:6px 13px;border-radius:99px;margin-bottom:20px}
@@ -74,6 +96,7 @@
   .btn-go:disabled{opacity:.6;cursor:wait;transform:none}
   .btn-go svg{transition:transform .25s}
   .btn-go:not(:disabled):hover svg{transform:translateX(3px)}
+  :root[data-theme="dark"] .btn-go{color:#0E0F14}
 
   .row-aux{display:flex;align-items:center;justify-content:space-between;padding:12px 6px 4px;gap:12px}
   .toggle-alias{display:inline-flex;align-items:center;gap:7px;font-size:13.5px;color:var(--muted);font-weight:500;background:none;border:0;padding:4px}
@@ -89,7 +112,7 @@
   .alias-prefix{font-family:"JetBrains Mono",monospace;font-size:13.5px;color:var(--faint);white-space:nowrap}
   .alias-inner input{flex:1;border:0;background:none;outline:none;font-family:"JetBrains Mono",monospace;font-size:14px;color:var(--ink);min-width:0;padding:0 8px}
 
-  .err{color:var(--danger);font-size:13.5px;font-weight:500;padding:8px 8px 2px;display:none}
+  .err{color:var(--danger);font-size:13.5px;font-weight:500;padding:8px 8px 2px;display:none;line-height:1.5}
   .err.show{display:block}
 
   .result{margin-top:18px;display:none}
@@ -108,11 +131,11 @@
   .qr{flex:none;width:92px;height:92px;border-radius:12px;border:1px solid var(--line-soft);padding:7px;background:#fff;display:grid;place-items:center}
   .qr img,.qr canvas{width:100%!important;height:100%!important;display:block;border-radius:4px}
 
-  .shrink{border-top:1px solid var(--line-soft);padding:16px 22px;background:linear-gradient(var(--surface),#FCFCFE)}
+  .shrink{border-top:1px solid var(--line-soft);padding:16px 22px;background:linear-gradient(var(--surface),var(--surface-2))}
   .shrink-head{display:flex;justify-content:space-between;align-items:baseline;font-size:12.5px;color:var(--muted);margin-bottom:9px}
   .shrink-head b{font-family:"Sora",sans-serif;color:var(--ink);font-weight:700;font-size:14px}
   .bar{height:8px;border-radius:99px;background:var(--line);position:relative;overflow:hidden}
-  .bar-fill{position:absolute;inset:0 auto 0 0;border-radius:99px;background:linear-gradient(90deg,var(--accent),#7C5CFC);width:100%;transition:width 1s cubic-bezier(.5,0,.1,1)}
+  .bar-fill{position:absolute;inset:0 auto 0 0;border-radius:99px;background:linear-gradient(90deg,var(--accent),#9A8CFF);width:100%;transition:width 1s cubic-bezier(.5,0,.1,1)}
   .expiry{display:flex;align-items:center;gap:7px;padding:11px 22px;border-top:1px solid var(--line-soft);font-size:12.5px;color:var(--muted)}
   .expiry svg{color:var(--faint);flex:none}
   .expiry b{color:var(--ink);font-weight:600}
@@ -124,7 +147,7 @@
   .recent-clear:hover{color:var(--danger)}
   .recent-list{display:flex;flex-direction:column;gap:8px}
   .r-item{display:flex;align-items:center;gap:14px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:13px 16px;transition:.16s}
-  .r-item:hover{border-color:#D7DAE2;box-shadow:var(--shadow)}
+  .r-item:hover{border-color:var(--line-hover);box-shadow:var(--shadow)}
   .r-body{flex:1;min-width:0}
   .r-top{display:flex;align-items:center;gap:9px}
   .r-short{font-family:"JetBrains Mono",monospace;font-weight:600;font-size:14px;color:var(--ink);text-decoration:none}
@@ -138,6 +161,8 @@
   .demo-band{display:none;margin-top:14px;background:#FFF8EC;border:1px solid #F4E2BC;color:#8A6D2B;border-radius:12px;padding:12px 15px;font-size:13px;line-height:1.5}
   .demo-band.show{display:block}
   .demo-band b{color:#6E5417}
+  :root[data-theme="dark"] .demo-band{background:#241E12;border-color:#473A1D;color:#D9BE7E}
+  :root[data-theme="dark"] .demo-band b{color:#F0DCA8}
 
   footer{margin-top:56px;padding:26px 0 40px;border-top:1px solid var(--line);text-align:center;color:var(--faint);font-size:13px}
   footer .brand{justify-content:center;font-size:15px;margin-bottom:6px;color:var(--muted)}
@@ -149,6 +174,7 @@
   .rd-card h2{font-family:"Sora",sans-serif;font-size:20px;font-weight:700;letter-spacing:-.02em;margin-bottom:8px}
   .rd-card p{color:var(--muted);font-size:14.5px}
   .rd-card .home-btn{display:inline-flex;margin-top:20px;align-items:center;gap:8px;background:var(--accent);color:#fff;text-decoration:none;font-family:"Sora",sans-serif;font-weight:600;font-size:14.5px;padding:11px 20px;border-radius:11px;transition:.16s}
+  :root[data-theme="dark"] .rd-card .home-btn{color:#0E0F14}
   .rd-card .home-btn:hover{background:var(--accent-press)}
   .rd-fail .rd-spin{display:none}
 
@@ -175,10 +201,13 @@
         </svg>
         kısaltıver<span class="dot">.</span>
       </a>
-      <a class="ghlink" id="ghLink" href="https://github.com" target="_blank" rel="noopener">
-        <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.49-2.7-1.07-2.7-1.07-.36-.93-.89-1.18-.89-1.18-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
-        GitHub
-      </a>
+      <div class="actions">
+        <button class="icon-btn" id="themeBtn" type="button" aria-label="Temayı değiştir"></button>
+        <a class="ghlink" id="ghLink" href="https://github.com" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38v-1.33c-2.23.49-2.7-1.07-2.7-1.07-.36-.93-.89-1.18-.89-1.18-.73-.5.05-.49.05-.49.81.06 1.23.83 1.23.83.72 1.23 1.88.87 2.34.67.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82a7.6 7.6 0 0 1 4 0c1.53-1.03 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.28.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48v2.2c0 .21.15.46.55.38A8 8 0 0 0 16 8c0-4.42-3.58-8-8-8Z"/></svg>
+          GitHub
+        </a>
+      </div>
     </div>
   </header>
 
@@ -290,20 +319,54 @@
   "use strict";
   const CFG = window.KISALT_CONFIG || {};
   const DOMAIN = CFG.DOMAIN || location.host;
-  const REAL = !!(CFG.SUPABASE_URL && CFG.SUPABASE_ANON_KEY);
+  const REAL = !!((CFG.SUPABASE_URL||"").trim() && (CFG.SUPABASE_ANON_KEY||"").trim());
   const ALPHABET = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
-  const EXPIRY_MS = 3*24*60*60*1000;          // 3 gün
+  const EXPIRY_MS = 3*24*60*60*1000;
   const RECENT_KEY = "kv_recent";
   const LOCAL_DB = "kv_links";
 
-  /* ── Backend: Supabase ya da (demo) localStorage ── */
+  /* ── Tema ── */
+  const SUN='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.2"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>';
+  const MOON='<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>';
+  function setupTheme(){
+    const btn=document.getElementById("themeBtn");
+    if(!btn) return;
+    const paint=()=>{ const dark=document.documentElement.dataset.theme==="dark";
+      btn.innerHTML = dark?SUN:MOON;
+      btn.setAttribute("aria-label", dark?"Aydınlık moda geç":"Karanlık moda geç"); };
+    btn.addEventListener("click",()=>{
+      const next = document.documentElement.dataset.theme==="dark" ? "light":"dark";
+      document.documentElement.dataset.theme = next;
+      try{ localStorage.setItem("kv_theme", next); }catch(e){}
+      paint();
+    });
+    paint();
+  }
+
+  /* ── Backend ── */
   let sb = null;
   async function supa(){
     if(sb) return sb;
-    const m = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm");
-    sb = m.createClient(CFG.SUPABASE_URL, CFG.SUPABASE_ANON_KEY);
+    let m;
+    try{ m = await import("https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm"); }
+    catch(e){ throw new Error("Supabase kütüphanesi yüklenemedi. İnternet bağlantını kontrol et."); }
+    sb = m.createClient(CFG.SUPABASE_URL.trim(), CFG.SUPABASE_ANON_KEY.trim());
     return sb;
   }
+  function supaErr(error){
+    const m=((error&&(error.message||error.details||error.hint))||"").toLowerCase();
+    const code=error&&error.code;
+    if(code==="42P01"||m.includes("does not exist")||m.includes("could not find the table")||m.includes("schema cache"))
+      return "Supabase'de 'links' tablosu bulunamadı. SQL Editor'de tablo oluşturma kodunu çalıştırdın mı?";
+    if(code==="42501"||m.includes("row-level security")||m.includes("permission denied")||m.includes("violates row"))
+      return "Supabase erişimi reddetti (RLS). Tablo için okuma ve ekleme politikalarını eklemen gerekiyor.";
+    if(m.includes("jwt")||m.includes("invalid api key")||m.includes("api key")||code==="401")
+      return "Supabase anahtarı geçersiz. Settings → API'den 'anon public' anahtarını kopyaladığından emin ol.";
+    if(m.includes("failed to fetch")||m.includes("networkerror")||m.includes("load failed"))
+      return "Supabase'e ulaşılamadı. SUPABASE_URL doğru mu ve internetin var mı?";
+    return "Supabase hatası: " + ((error&&error.message)||"bilinmeyen") + ".";
+  }
+
   const localDB = {
     all(){ try{return JSON.parse(localStorage.getItem(LOCAL_DB)||"{}")}catch(e){return {}} },
     save(o){ localStorage.setItem(LOCAL_DB, JSON.stringify(o)) },
@@ -315,7 +378,8 @@
   async function codeExists(code){
     if(!REAL) return localDB.exists(code);
     const c = await supa();
-    const { data } = await c.from("links").select("code,created_at").eq("code", code).maybeSingle();
+    const { data, error } = await c.from("links").select("code,created_at").eq("code", code).maybeSingle();
+    if(error) throw new Error(supaErr(error));
     if(!data) return false;
     return (Date.now() - new Date(data.created_at).getTime()) < EXPIRY_MS;
   }
@@ -323,14 +387,14 @@
     if(!REAL){ localDB.put(code, url); return; }
     const c = await supa();
     const { error } = await c.from("links").insert({ code, url });
-    if(error) throw error;
+    if(error) throw new Error(supaErr(error));
   }
   async function resolveLink(code){
     if(!REAL){ const r = localDB.get(code); return r ? r.url : null; }
     const c = await supa();
     const { data } = await c.from("links").select("url,created_at").eq("code", code).maybeSingle();
     if(!data) return null;
-    if((Date.now() - new Date(data.created_at).getTime()) >= EXPIRY_MS) return null; // süresi dolmuş
+    if((Date.now() - new Date(data.created_at).getTime()) >= EXPIRY_MS) return null;
     return data.url;
   }
 
@@ -372,6 +436,7 @@
   function runApp(){
     document.body.classList.remove("booting");
     document.getElementById("redirect").style.display="none";
+    setupTheme();
     const $ = id => document.getElementById(id);
     const urlInput=$("url"), aliasInput=$("alias"), goBtn=$("go"), errBox=$("err");
     const aliasToggle=$("aliasToggle"), aliasWrap=$("aliasWrap");
@@ -410,7 +475,7 @@
         const exp=Date.now()+EXPIRY_MS;
         addRecent(code,url,exp);
         showResult(code,url,exp);
-      }catch(e){ showErr("Bir şeyler ters gitti. Bağlantını kontrol edip tekrar dene."); console.error(e); }
+      }catch(e){ showErr(e&&e.message ? e.message : "Bir şeyler ters gitti. Tekrar dene."); console.error(e); }
       finally{ goBtn.disabled=false; goBtn.innerHTML=old; }
     }
 
