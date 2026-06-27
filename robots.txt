@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xn--ksaltver-tkbe.com/sitemap.xml
