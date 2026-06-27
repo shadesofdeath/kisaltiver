@@ -53,6 +53,7 @@
   window.KISALT_CONFIG = {
     SUPABASE_URL: "https://uksrqggocchtjkpcpdbe.supabase.co",
     SUPABASE_ANON_KEY: "sb_publishable_b-L9tk2HE05vnJWxcwYb6g_fiTK1GOm",
+    TURNSTILE_SITE_KEY: "0x4AAAAAADsBkcYwF17RcvY8",   // Cloudflare Turnstile "Site Key" (doldurunca güvenli mod açılır)
     DOMAIN: "kısaltıver.com"
   };
 </script>
@@ -151,6 +152,7 @@
 
   .err{color:var(--danger);font-size:13.5px;font-weight:500;padding:8px 8px 2px;display:none;line-height:1.5}
   .err.show{display:block}
+  .ts-box{padding:12px 6px 2px;display:flex;justify-content:center}
 
   .result{margin-top:18px;display:none}
   .result.show{display:block;animation:rise .4s cubic-bezier(.2,.8,.2,1)}
@@ -284,6 +286,8 @@
         </div>
       </div>
 
+      <div class="ts-box" id="tsBox" style="display:none"><div id="cf-turnstile"></div></div>
+
       <div class="err" id="err"></div>
     </section>
 
@@ -362,6 +366,8 @@
   const CFG = window.KISALT_CONFIG || {};
   const DOMAIN = CFG.DOMAIN || location.host;
   const REAL = !!((CFG.SUPABASE_URL||"").trim() && (CFG.SUPABASE_ANON_KEY||"").trim());
+  const SECURE = REAL && !!((CFG.TURNSTILE_SITE_KEY||"").trim());   // Turnstile + Edge Function modu
+  const FN_URL = (CFG.SUPABASE_URL||"").trim().replace(/\/$/,"") + "/functions/v1/shorten";
   const ALPHABET = "abcdefghijkmnpqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ23456789";
   const EXPIRY_MS = 3*24*60*60*1000;
   const RECENT_KEY = "kv_recent";
@@ -430,6 +436,20 @@
     const c = await supa();
     const { error } = await c.from("links").insert({ code, url });
     if(error) throw new Error(supaErr(error));
+  }
+  // Güvenli mod: linki tarayıcı değil, Edge Function (gizli anahtarla) yazar
+  async function createLinkSecure(url, alias, token){
+    let res;
+    try{
+      res = await fetch(FN_URL, {
+        method:"POST",
+        headers:{ "content-type":"application/json" },
+        body: JSON.stringify({ url, alias, token })
+      });
+    }catch(e){ throw new Error("Sunucuya ulaşılamadı. İnternet bağlantını kontrol et."); }
+    let data={}; try{ data = await res.json(); }catch(e){}
+    if(!res.ok) throw new Error(data.error || "Kısaltma başarısız. Tekrar dene.");
+    return data; // { code, url, expiresAt }
   }
   async function resolveLink(code){
     if(!REAL){ const r = localDB.get(code); return r ? r.url : null; }
@@ -522,9 +542,31 @@
     const result=$("result"), shortLinkEl=$("shortLink"), copyBtn=$("copyBtn"), qrBox=$("qr");
     const recentSec=$("recentSec"), recentList=$("recentList");
     let lastCode="";
+    let tsToken="", tsWidgetId=null;
 
     $("aliasPrefix").textContent = DOMAIN+"/?";
     if(!REAL) $("demoBand").classList.add("show");
+
+    // Güvenli mod: Cloudflare Turnstile doğrulamasını yükle ve göster
+    if(SECURE){
+      $("tsBox").style.display="flex";
+      window.__renderTurnstile = function(){
+        try{
+          tsWidgetId = turnstile.render("#cf-turnstile", {
+            sitekey: CFG.TURNSTILE_SITE_KEY.trim(),
+            callback: t => { tsToken = t; clearErr(); },
+            "expired-callback": () => { tsToken = ""; },
+            "error-callback": () => { tsToken = ""; },
+            theme: document.documentElement.dataset.theme==="dark" ? "dark" : "light",
+            size: "flexible"
+          });
+        }catch(e){}
+      };
+      const s=document.createElement("script");
+      s.src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=__renderTurnstile";
+      s.async=true; s.defer=true;
+      document.head.appendChild(s);
+    }
 
     aliasToggle.addEventListener("click", ()=>{
       const open=aliasWrap.classList.toggle("open");
@@ -537,21 +579,34 @@
 
     async function shorten(){
       clearErr();
-      const url=normalizeUrl(urlInput.value);
+      const raw=urlInput.value.trim();
+      const url=normalizeUrl(raw);
       if(!url){ showErr("Geçerli bir bağlantı yapıştır. Örn: https://site.com/sayfa"); urlInput.focus(); return; }
-      let code=cleanAlias(aliasInput.value);
+
       goBtn.disabled=true; const old=goBtn.innerHTML; goBtn.innerHTML="Kısaltılıyor…";
       try{
-        if(code){
-          if(code.length<2){ showErr("Özel ad en az 2 karakter olmalı."); return; }
-          if(await codeExists(code)){ showErr("Bu özel ad alınmış. Başka dene."); aliasInput.focus(); return; }
+        let code, exp=Date.now()+EXPIRY_MS;
+
+        if(SECURE){
+          if(!tsToken){ showErr("Lütfen aşağıdaki güvenlik doğrulamasını tamamla."); return; }
+          const data = await createLinkSecure(raw, aliasInput.value, tsToken);
+          code = data.code;
+          exp = data.expiresAt || exp;
+          try{ turnstile.reset(tsWidgetId); }catch(e){}
+          tsToken="";
         }else{
-          let len=5,tries=0;
-          do{ code=randCode(len); if(++tries%4===0) len++; }while(await codeExists(code)&&tries<20);
+          code = cleanAlias(aliasInput.value);
+          if(code){
+            if(code.length<2){ showErr("Özel ad en az 2 karakter olmalı."); return; }
+            if(await codeExists(code)){ showErr("Bu özel ad alınmış. Başka dene."); aliasInput.focus(); return; }
+          }else{
+            let len=5,tries=0;
+            do{ code=randCode(len); if(++tries%4===0) len++; }while(await codeExists(code)&&tries<20);
+          }
+          await createLink(code,url);
         }
-        await createLink(code,url);
+
         lastCode=code;
-        const exp=Date.now()+EXPIRY_MS;
         addRecent(code,url,exp);
         showResult(code,url,exp);
       }catch(e){ showErr(e&&e.message ? e.message : "Bir şeyler ters gitti. Tekrar dene."); console.error(e); }
